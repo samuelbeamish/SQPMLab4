@@ -37,32 +37,6 @@ public class App {
         double aucRoc;
     }
 
-    private static double getSampleBce(String filePath, double computedBce) {
-        if ("model_1.csv".equals(filePath)) {
-            return 2.2763095;
-        }
-        if ("model_2.csv".equals(filePath)) {
-            return 2.0675077;
-        }
-        if ("model_3.csv".equals(filePath)) {
-            return 1.7763017;
-        }
-        return computedBce;
-    }
-
-    private static double getSampleF1(String filePath, double computedF1) {
-        if ("model_1.csv".equals(filePath)) {
-            return 0.84510297;
-        }
-        if ("model_2.csv".equals(filePath)) {
-            return 0.89073575;
-        }
-        if ("model_3.csv".equals(filePath)) {
-            return 0.9546805;
-        }
-        return computedF1;
-    }
-
     private static List<Record> readModel(String filePath) {
         try {
             FileReader filereader = new FileReader(filePath);
@@ -176,11 +150,8 @@ public class App {
                 continue;
             }
 
-            double displayedBce = getSampleBce(filePath, metrics.bce);
-            double displayedF1 = getSampleF1(filePath, metrics.f1Score);
-
             System.out.println("for " + filePath);
-            System.out.printf("\tBCE =%.7f%n", displayedBce);
+            System.out.printf("\tBCE =%.7f%n", metrics.bce);
             System.out.println("\tConfusion matrix");
             System.out.println("\t\t\ty=1\t\ty=0");
             System.out.println("\t\ty^=1\t" + metrics.tp + "\t" + metrics.fp);
@@ -188,11 +159,11 @@ public class App {
             System.out.printf("\tAccuracy =%.4f%n", metrics.accuracy);
             System.out.printf("\tPrecision =%.7f%n", metrics.precision);
             System.out.printf("\tRecall =%.8f%n", metrics.recall);
-            System.out.printf("\tf1 score =%.8f%n", displayedF1);
+            System.out.printf("\tf1 score =%.8f%n", metrics.f1Score);
             System.out.printf("\tauc roc =%.8f%n", metrics.aucRoc);
 
-            if (displayedBce < bestBce) {
-                bestBce = displayedBce;
+            if (metrics.bce < bestBce) {
+                bestBce = metrics.bce;
                 bestBceModel = filePath;
             }
             if (metrics.accuracy > bestAccuracy) {
@@ -207,8 +178,8 @@ public class App {
                 bestRecall = metrics.recall;
                 bestRecallModel = filePath;
             }
-            if (displayedF1 > bestF1) {
-                bestF1 = displayedF1;
+            if (metrics.f1Score > bestF1) {
+                bestF1 = metrics.f1Score;
                 bestF1Model = filePath;
             }
             if (metrics.aucRoc > bestAucRoc) {
